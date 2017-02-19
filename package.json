@@ -1,0 +1,22 @@
+{
+  "name": "web-architect-paypal-test",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "node server"
+  },
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "cookie-parser": "^1.4.3",
+    "debug": "^2.6.1",
+    "errorhandler": "^1.5.0",
+    "express": "^4.14.1",
+    "express-session": "^1.15.1",
+    "lodash": "^4.17.4",
+    "method-override": "^2.3.7",
+    "morgan": "^1.8.1",
+    "nodemailer": "^3.1.3",
+    "paypal-rest-sdk": "^1.7.1",
+    "pug": "^2.0.0-beta11",
+    "serve-favicon": "^2.3.2"
+  }
+}

@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Giulia",
+        "sku": "1",
+        "price": "10.99"
+    },
+    {
+        "name": "Giulietta",
+        "sku": "2",
+        "price": "6.99"
+    },
+    {
+        "name": "Tipo",
+        "sku": "3",
+        "price": "2.99"
+    },
+    {
+        "name": "500",
+        "sku": "4",
+        "price": "7.99"
+    }
+]

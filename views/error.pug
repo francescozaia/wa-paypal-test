@@ -1,0 +1,20 @@
+extends layout/main
+
+block content
+	.container
+		h1 Errore
+		- var code = "Code: " + error.httpStatusCode;
+		- var description = JSON.stringify(error, null, 2);
+		h3= code
+		
+		ul.collapsible(data-collapsible='accordion')
+			li
+				.collapsible-header
+					i.material-icons mode_edit
+					| Dettagli dell'errore
+				.collapsible-body
+					span= description
+
+		a.waves-effect.waves-teal.btn-flat(href='/')
+			i.material-icons.left fast_rewind
+			| Indietro

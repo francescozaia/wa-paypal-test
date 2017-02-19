@@ -1,0 +1,35 @@
+extends layout/main
+
+block content
+	- var redirectUrl;
+	- if(payment.payer.payment_method === 'paypal') {
+	- 	for(var i=0; i < payment.links.length; i++) {
+	- 		var link = payment.links[i];
+	- 		if (link.method === 'REDIRECT') {
+	- 			redirectUrl = link.href;
+	- 		}
+	- 	}
+	- }
+	- var paymentDetails = JSON.stringify(payment, null, 2);
+	.container
+		h1 Riepilogo prodotti:
+		if redirectUrl
+			ul.collection
+				each key in payment.transactions[0].item_list.items
+					li.collection-item.avatar
+						img.circle(src='images/'+key.sku+'.jpg')
+						|  
+						span.title !{key.name}
+						p
+						| !{key.quantity}
+					
+			h2 Totale !{payment.transactions[0].amount.total}
+
+			a.waves-effect.waves-teal.btn-flat(href='/')
+				i.material-icons.left fast_rewind
+				| Indietro
+
+			a(href=redirectUrl)
+				button.btn.waves-effect.waves-light(type='button')
+					| Procedi al pagamento con Paypal
+					i.material-icons.right send
