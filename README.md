@@ -22,4 +22,9 @@ Prima di lanciare il server, **assicurarsi di avere impostato le variabili di am
 
 A questo punto, node dovrebbe rendere disponibile l'accesso a [http://localhost:3000](http://localhost:3000).
 
-*TODO: remove jQuery, clean routes code, tests?*
+## Importante: Come anticipato, l'applicazione richiede ancora alcune attività:
+- ottimizzazione/ripulitura codice Javascript, sia lato server che lato client
+- stesura documentazione di massima sul perché dell'utilizzo di node.js e dei framework scelti, e possibili improvement
+- volevo provare a rimuovere la dipendenza da nodemailer per una più ampia compatibilità, visto che al momento richiede node versione 6
+- aggiunta test (dato il breve tempo di lavorazione - 1 giorno - non ho lavorato test-driven)
+- varie ed eventuali per migliorare la chiarezza generale
