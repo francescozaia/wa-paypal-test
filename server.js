@@ -12,9 +12,10 @@ var pug = require('pug');
 var router = express.Router();
 
 var app = express();
+
 try {
-    var configJSON = fs.readFileSync(__dirname + "/config.json");
-    var productsJSON = fs.readFileSync(__dirname + "/products.json");
+    var configJSON = fs.readFileSync(__dirname + "/config/paypal-settings.json");
+    var productsJSON = fs.readFileSync(__dirname + "/config/products-settings.json");
     var config = JSON.parse(configJSON.toString());
     var products = JSON.parse(productsJSON.toString());
 } catch (e) {
@@ -23,6 +24,7 @@ try {
 }
 
 console.log("Assicurarsi che le righe successive mostrino le variabili di sistema");
+
 console.log("PayPal ID: " + process.env.PAYPAL_ID);
 console.log("PayPal Secret: " + process.env.PAYPAL_SECRET);
 console.log("Indirizzo Gmail: " + process.env.GMAIL_ACCOUNT);

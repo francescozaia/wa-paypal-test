@@ -6,16 +6,21 @@ var _ = require('lodash');
 
 var productsJSON;
 var basketJSON;
-// Routes
 
-var sendEmail = function(payment) {
-	var emailHTML = "<p>Hai acquistato:<ul>";
-	var items = payment.transactions[0].item_list.items
-
+var createEmailHTML = function (paymentObject) {
+	var items = payment.transactions[0].item_list.items;
+	var emailHTML = '<p>Hai acquistato:';
+	emailHTML += '<ul>';
 	for (var i=0; i<items.length; i++) {
-		emailHTML += "<li>" + items[i].name + " (quantità: " + + items[i].quantity + ")" + "</li>";
+		emailHTML += '<li>' + items[i].name + ' (quantità: ' + + items[i].quantity + ')' + '</li>';
 	}
-	emailHTML +="</ul></p><p>Per un prezzo totale di " + payment.transactions[0].amount.currency + " " + payment.transactions[0].amount.total + "</p>";
+	emailHTML += '</ul>';
+	emailHTML += '</p>'
+	emailHTML += '<p>Per un prezzo totale di ' + payment.transactions[0].amount.currency + ' ' + payment.transactions[0].amount.total + '</p>';
+}
+
+var sendEmail = function(paymentObject) {
+	var emailHTML = createEmailHTML(paymentObject);
 	var transporter = nodemailer.createTransport({
 		service: 'Gmail',
 		auth: {
@@ -24,19 +29,18 @@ var sendEmail = function(payment) {
 		}
 	});
 	var mailOptions = {
-		from: payment.transactions[0].payee.email,
-		to: payment.payer.payer_info.email,
+		from: paymentObject.transactions[0].payee.email,
+		to: paymentObject.payer.payer_info.email,
 		subject: 'Complimenti per il tuo acquisto!',
 		html: emailHTML
 	};
 	transporter.sendMail(mailOptions, function(error, info){
-		if(error){
+		if (error) {
 			console.log(error);
-		}else{
+		} else {
 			console.log('Message sent: ' + info.response);
 		};
 	});
-	console.log("fatto.")
 }
 
 exports.index = function (req, res) {
@@ -45,7 +49,9 @@ exports.index = function (req, res) {
 
 exports.addToBasket = function (req, res) {
 	var sku = req.params.sku;
-	var index = _.indexOf(basketJSON, _.find(basketJSON, function(o) { return o.sku == sku; }));
+	var index = _.indexOf(basketJSON, _.find(basketJSON, function(o) { 
+		return o.sku == sku; 
+	}));
 	if (index > -1) {
 		basketJSON[index].qty = (!basketJSON[index].qty) ? 1 : basketJSON[index].qty + 1;
 		res.send(basketJSON);
@@ -57,39 +63,47 @@ exports.addToBasket = function (req, res) {
 exports.createPayment = function (req, res) {
 	var method = req.params.method;
 
-	var grandTotal = 0;
-	var b = _.filter(basketJSON, function(o) { return (o.qty && o.qty !== 0) });
+	var host = process.env.NODE_ENV ? 'wa-paypal-test.herokuapp.com' : 'localhost';
+	var port = process.env.PORT || 3000;
 
-	
+	var currency = 'GBP';
+
+	var grandTotal = 0;
+	var b = _.filter(basketJSON, function(o) { 
+		return (o.qty && o.qty !== 0)
+	});
+
 	for (var i = 0; i < b.length; i++) {
 		b[i].total = b[i].qty * b[i].price;
-		grandTotal += b[i].total;
 		b[i].quantity = b[i].qty.toString();
 		b[i].qty = b[i].qty.toString();
-		b[i].currency = "GBP";
+		b[i].currency = currency;
+		grandTotal += b[i].total;
 		delete b[i].qty;
 		delete b[i].total;
 	}
 	grandTotal = grandTotal.toString();
 
+	console.log('http://' + host + ':' + port + '/');
+
 	var payment = {
-		"intent": "sale",
-		"payer": {
-			"payment_method": "paypal"
+		'intent': 'sale',
+		'payer': {
+			'payment_method': 'paypal'
 		},
-		"transactions": [{
-			"item_list": {
-                    "items": b
+		'transactions': [{
+			'item_list': {
+                    'items': b
                 },
-			"amount": {
-				"currency": "GBP",
-				"total": grandTotal
+			'amount': {
+				'currency': currency,
+				'total': grandTotal
 			},
-			"description": "userID"
+			'description': 'userID'
 		}],
-		"redirect_urls": {
-			"return_url": "http://localhost:3000/execute",
-			"cancel_url": "http://localhost:3000/cancel"
+		'redirect_urls': {
+			'return_url': 'http://' + host + ':' + port + '/execute',
+			'cancel_url': 'http://' + host + ':' + port + '/cancel'
 		}
 	};
 
@@ -99,7 +113,6 @@ exports.createPayment = function (req, res) {
 			res.render('error', { 'error': error });
 		} else {
 			req.session.paymentId = payment.id;
-
 			res.render('create', { 'payment': payment });
 		}
 	});
@@ -107,9 +120,9 @@ exports.createPayment = function (req, res) {
 
 exports.executePayment = function (req, res) {
 	var paymentId = req.session.paymentId;
-	var payerId = req.param("PayerID");
+	var payerId = req.param('PayerID');
 
-	var details = { "payer_id": payerId };
+	var details = { 'payer_id': payerId };
 	var payment = paypal.payment.execute(paymentId, details, function (error, payment) {
 		if (error) {
 			console.log(error);
