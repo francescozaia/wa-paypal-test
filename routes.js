@@ -65,7 +65,12 @@ exports.createPayment = function (req, res) {
 	var method = req.params.method;
 
 	var host = process.env.HEROKU_URL || 'localhost';
-	var port = process.env.PORT || 3000;
+	var port = process.env.HEROKU_URL || 3000;
+
+	var fullHost = host;
+	if (port !== process.env.HEROKU_URL) {
+		fullHost += ':' + port;
+	}
 
 	var currency = 'GBP';
 
@@ -85,7 +90,6 @@ exports.createPayment = function (req, res) {
 	}
 	grandTotal = grandTotal.toString();
 
-	console.log('http://' + host + ':' + port + '/');
 
 	var payment = {
 		'intent': 'sale',
@@ -103,8 +107,8 @@ exports.createPayment = function (req, res) {
 			'description': 'userID'
 		}],
 		'redirect_urls': {
-			'return_url': 'http://' + host + ':' + port + '/execute',
-			'cancel_url': 'http://' + host + ':' + port + '/cancel'
+			'return_url': 'http://' + fullHost + '/execute',
+			'cancel_url': 'http://' + fullHost + '/cancel'
 		}
 	};
 
