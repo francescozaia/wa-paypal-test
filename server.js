@@ -3,9 +3,6 @@ var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var methodOverride = require('method-override');
 var session = require('express-session');
 var pug = require('pug');
 
@@ -37,12 +34,6 @@ routes.init(config, products);
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use(bodyParser.json());
-app.use(methodOverride('X-HTTP-Method-Override'))
-app.use(cookieParser());
 app.use(session({
     secret: 'fz-test',
     resave: false,

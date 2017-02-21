@@ -8,7 +8,7 @@ var productsJSON;
 var basketJSON;
 
 var createEmailHTML = function (paymentObject) {
-	var items = payment.transactions[0].item_list.items;
+	var items = paymentObject.transactions[0].item_list.items;
 	var emailHTML = '<p>Hai acquistato:';
 	emailHTML += '<ul>';
 	for (var i=0; i<items.length; i++) {
@@ -16,7 +16,8 @@ var createEmailHTML = function (paymentObject) {
 	}
 	emailHTML += '</ul>';
 	emailHTML += '</p>'
-	emailHTML += '<p>Per un prezzo totale di ' + payment.transactions[0].amount.currency + ' ' + payment.transactions[0].amount.total + '</p>';
+	emailHTML += '<p>Per un prezzo totale di ' + paymentObject.transactions[0].amount.currency + ' ' + paymentObject.transactions[0].amount.total + '</p>';
+	return emailHTML;
 }
 
 var sendEmail = function(paymentObject) {
@@ -63,7 +64,7 @@ exports.addToBasket = function (req, res) {
 exports.createPayment = function (req, res) {
 	var method = req.params.method;
 
-	var host = process.env.NODE_ENV ? 'wa-paypal-test.herokuapp.com' : 'localhost';
+	var host = process.env.HEROKU_URL || 'localhost';
 	var port = process.env.PORT || 3000;
 
 	var currency = 'GBP';
